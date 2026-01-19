@@ -1,0 +1,117 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 调试经验记录规则
+
+## 触发条件
+
+每当调试脚本运行完成或修复bug并提交时，自动在根目录下的 [DEBUG_LOG.md](mdc:DEBUG_LOG.md) 中追加一条调试经验条目。
+
+## 行为规范
+
+自动追加的调试经验记录应包含：
+- 问题描述
+- 排查过程
+- 最终解决方案
+- 测试结果验证
+
+## 记录格式
+
+调试经验记录应遵循以下格式规范：
+
+```markdown
+## [日期] 问题标题
+
+### 问题描述
+简要描述问题现象、发生条件和影响范围。
+
+### 排查过程
+1. 首先检查了...
+2. 然后尝试了...
+3. 发现问题可能在于...
+
+### 解决方案
+```java
+// 修复代码示例
+public void fixedMethod() {
+    // 修复后的实现
+}
+```
+
+### 测试验证
+- 测试用例1: ✅
+- 测试用例2: ✅
+- 边界条件: ✅
+
+### 相关模块
+- [模块名称]
+- [相关类/文件]
+
+### 经验总结
+问题根本原因和今后如何避免类似问题。
+
+### 相关链接
+- [问题报告 #ID](mdc:链接)
+- [提交记录](mdc:链接)
+```
+
+## 注意事项
+
+1. 记录应尽可能详细，特别是对于复杂或罕见问题
+2. 每个记录应包含足够信息，使其他团队成员能够理解和复现
+3. 代码示例应标注清楚修改前后的差异
+4. 记录应添加相关标签，便于日后检索
+5. 经验总结部分应提取普遍性经验，而非仅限于特定场景
+
+## 实现方式
+
+通过调试脚本完成后的自动触发器实现：
+
+```java
+public class DebugExperienceRecorder {
+    private static final String DEBUG_LOG_PATH = "DEBUG_LOG.md";
+    
+    public static void recordExperience(DebugSession session) {
+        StringBuilder entry = new StringBuilder();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(new Date());
+        
+        entry.append("## [").append(date).append("] ").append(session.getTitle()).append("\n\n");
+        entry.append("### 问题描述\n").append(session.getProblemDescription()).append("\n\n");
+        entry.append("### 排查过程\n").append(formatInvestigationSteps(session.getInvestigationSteps())).append("\n\n");
+        entry.append("### 解决方案\n").append(formatSolution(session.getSolution())).append("\n\n");
+        entry.append("### 测试验证\n").append(formatTestResults(session.getTestResults())).append("\n\n");
+        entry.append("### 相关模块\n").append(formatModules(session.getRelatedModules())).append("\n\n");
+        entry.append("### 经验总结\n").append(session.getLessonLearned()).append("\n\n");
+        
+        if (!session.getRelatedLinks().isEmpty()) {
+            entry.append("### 相关链接\n").append(formatLinks(session.getRelatedLinks())).append("\n\n");
+        }
+        
+        // 添加到日志文件
+        File debugLog = new File(DEBUG_LOG_PATH);
+        try {
+            String content = entry.toString();
+            if (debugLog.exists()) {
+                content += "\n" + FileUtils.readFileToString(debugLog, StandardCharsets.UTF_8);
+            }
+            FileUtils.writeStringToFile(debugLog, content, StandardCharsets.UTF_8);
+            System.out.println("Debug experience recorded successfully.");
+        } catch (IOException e) {
+            System.err.println("Failed to record debug experience: " + e.getMessage());
+        }
+    }
+    
+    // 辅助格式化方法...
+}
+```
+
+## 集成方式
+
+此规则可以集成到以下位置：
+
+1. 在DeepReadX应用中添加调试模式
+2. 在调试工具类中实现自动记录逻辑
+3. 在CI/CD流程中增加调试记录生成步骤

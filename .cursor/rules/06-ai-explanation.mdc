@@ -1,0 +1,66 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# AI解释模块设计
+
+## 模块概述
+
+AI解释模块是DeepReadX应用中连接OCR识别结果与DeepSeek API的桥梁，负责将识别文本转化为用户易懂的解释。
+
+## 主要文件
+
+- DeepSeekApiClient.java - API客户端
+- StylePreset.java - 风格预设模型
+- ExplanationPanel.java - 解释显示面板
+
+## 核心功能
+
+1. 风格预设管理
+2. API参数构建
+3. 流式响应处理
+4. 解释结果展示
+
+## 代码示例
+
+```java
+public class DeepSeekApiClient {
+    private static final String API_URL = "https://api.deepseek.com";
+    private final OkHttpClient client;
+    private final String apiKey;
+    
+    public DeepSeekApiClient(Context context) {
+        this.apiKey = ApiKeyManager.getDeepSeekApiKey(context);
+        this.client = new OkHttpClient.Builder()
+            .readTimeout(60, TimeUnit.SECONDS)
+            .build();
+    }
+    
+    public void generateExplanation(String text, StylePreset style, ExplanationCallback callback) {
+        // 构建API请求
+        String prompt = buildPrompt(text, style);
+        RequestBody requestBody = buildRequestBody(prompt);
+        Request request = buildRequest(requestBody);
+        
+        // 发送异步请求
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> callback.onError(e.getMessage()));
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                handleStreamingResponse(response, callback);
+            }
+        });
+    }
+    
+    // 从数据库加载风格预设
+    public List<StylePreset> loadStylePresets(Context context) {
+        AppDatabase db = AppDatabase.getInstance(context);
+        return db.stylePresetDao().getAll();
+    }
+}
+

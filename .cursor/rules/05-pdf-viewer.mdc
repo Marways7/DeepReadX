@@ -1,0 +1,53 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# PDF查看器模块设计
+
+## 模块概述
+
+PDF查看器是DeepReadX应用的核心功能模块，负责PDF文档的加载、渲染和交互操作。
+
+## 主要文件
+
+- PdfViewerActivity.java - PDF查看器Activity
+- PdfRenderer.java - PDF渲染引擎
+- PdfPageView.java - PDF页面视图组件
+- ExplanationPanel.java - AI解释面板
+
+## 核心功能
+
+1. 打开PDF文件
+2. 分页浏览
+3. 文本选择与OCR识别
+4. 调用DeepSeek API生成解释
+5. 显示解释内容
+
+## 代码示例
+
+```java
+public class PdfViewerActivity extends AppCompatActivity {
+    private PdfRenderer pdfRenderer;
+    private Uri pdfUri;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pdf_viewer);
+        
+        // 获取PDF URI并初始化渲染器
+        pdfUri = getIntent().getParcelableExtra("pdf_uri");
+        initPdfRenderer();
+    }
+    
+    private void initPdfRenderer() {
+        try {
+            pdfRenderer = new PdfRenderer(this, pdfUri);
+            renderCurrentPage();
+        } catch (IOException e) {
+            Toast.makeText(this, "无法打开PDF文件", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+}

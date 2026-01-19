@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <item
+        android:id="@+id/action_history"
+        android:title="查看历史记录"
+        android:icon="@drawable/ic_history"
+        android:orderInCategory="90"
+        app:showAsAction="ifRoom" />
+        
+    <item
+        android:id="@+id/action_select_style"
+        android:title="选择讲解风格"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+        
+    <item
+        android:id="@+id/action_manage_styles"
+        android:title="管理讲解风格"
+        android:orderInCategory="110"
+        app:showAsAction="never" />
+</menu> 

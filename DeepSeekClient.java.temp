@@ -1,0 +1,158 @@
+﻿package com.deepreadx.api;import android.util.Log;import org.json.JSONArray;import org.json.JSONException;import org.json.JSONObject;import java.io.IOException;import java.util.concurrent.TimeUnit;import okhttp3.Call;import okhttp3.Callback;import okhttp3.MediaType;import okhttp3.OkHttpClient;import okhttp3.Request;import okhttp3.RequestBody;import okhttp3.Response;import okhttp3.ResponseBody;import okhttp3.logging.HttpLoggingInterceptor;
+
+/**
+ * DeepSeek API客户端，负责与DeepSeek服务通信并获取AI解释结果
+ * 
+ * @author DeepReadX团队
+ * @created 2025-05-18
+ */
+public class DeepSeekClient {
+    private static final String TAG = "DeepSeekClient";
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final int TIMEOUT_SECONDS = 60;
+    
+    private final String apiKey;
+    private final String baseUrl;
+    private final OkHttpClient client;
+    
+    /**
+     * API请求回调接口
+     */
+    public interface ApiCallback {
+        /**
+         * 成功接收到响应内容时回调
+         * 
+         * @param explanation AI生成的解释内容
+         */
+        void onResponse(String explanation);
+        
+        /**
+         * 请求发生错误时回调
+         * 
+         * @param e 异常信息
+         */
+        void onError(Exception e);
+    }
+    
+    /**
+     * 构造函数
+     * 
+     * @param apiKey DeepSeek API密钥
+     * @param baseUrl API基础URL
+     */
+    public DeepSeekClient(String apiKey, String baseUrl) {
+        this.apiKey = apiKey;
+        this.baseUrl = baseUrl;
+        
+        // 创建OkHttpClient实例，设置超时时间
+        this.client = new OkHttpClient.Builder()
+                .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .build();
+    }
+    
+    /**
+     * 请求AI解释
+     * 
+     * @param text 需要解释的文本
+     * @param style 解释风格，如"简明易懂"、"学术分析"等
+     * @param callback 请求回调
+     */
+    public void requestExplanation(String text, String style, final ApiCallback callback) {
+        if (text == null || text.isEmpty()) {
+            callback.onError(new IllegalArgumentException("文本不能为空"));
+            return;
+        }
+        
+        try {
+            // 构建请求体
+            JSONObject requestJson = buildRequestJson(text, style);
+            RequestBody requestBody = RequestBody.create(JSON, requestJson.toString());
+            
+            // 构建请求
+            Request request = new Request.Builder()
+                    .url(baseUrl + "/v1/chat/completions")
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Content-Type", "application/json")
+                    .post(requestBody)
+                    .build();
+            
+            // 发送异步请求
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e(TAG, "请求失败", e);
+                    callback.onError(e);
+                }
+                
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try (ResponseBody responseBody = response.body()) {
+                        if (!response.isSuccessful()) {
+                            callback.onError(new IOException("请求失败，状态码: " + response.code()));
+                            return;
+                        }
+                        
+                        if (responseBody == null) {
+                            callback.onError(new IOException("响应为空"));
+                            return;
+                        }
+                        
+                        String responseJson = responseBody.string();
+                        String explanation = parseResponse(responseJson);
+                        callback.onResponse(explanation);
+                    } catch (Exception e) {
+                        Log.e(TAG, "处理响应失败", e);
+                        callback.onError(e);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "构建请求失败", e);
+            callback.onError(e);
+        }
+    }
+    
+    /**
+     * 构建请求JSON
+     * 
+     * @param text 要解释的文本
+     * @param style 解释风格
+     * @return JSON对象
+     * @throws JSONException 如果JSON构建失败
+     */
+    private JSONObject buildRequestJson(String text, String style) throws JSONException {
+        // 构建提示词
+        String prompt = String.format(
+                "请以%s的风格解释以下文本内容：\n\n%s", 
+                style, 
+                text);
+        
+        JSONObject messageObj = new JSONObject();
+        messageObj.put("role", "user");
+        messageObj.put("content", prompt);
+        
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("model", "deepseek-chat");
+        jsonObject.put("temperature", 0.7);
+        jsonObject.put("max_tokens", 1000);
+        jsonObject.put("messages", new JSONObject[] { messageObj });
+        
+        return jsonObject;
+    }
+    
+    /**
+     * 解析API响应
+     * 
+     * @param responseJson 响应JSON字符串
+     * @return 提取的解释文本
+     * @throws JSONException 如果解析失败
+     */
+    private String parseResponse(String responseJson) throws JSONException {
+        JSONObject jsonObject = new JSONObject(responseJson);
+        JSONObject choicesObject = jsonObject.getJSONArray("choices").getJSONObject(0);
+        JSONObject messageObject = choicesObject.getJSONObject("message");
+        return messageObject.getString("content");
+    }
+} 

@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# DeepReadX项目概览
+
+## 项目定位
+DeepReadX是一款AI辅助阅读学习应用，帮助用户上传电子书/PDF，通过OCR和DeepSeek API实时生成难懂内容的通俗解释。
+
+## 技术栈
+- Android前端：Java + XML View System
+- OCR处理：Google ML Kit Text Recognition（支持离线和在线模式）
+- AI接入：DeepSeek API（REST / Streaming）
+- 本地存储：SQLite数据库
+
+## 核心功能
+1. 本地PDF打开与分页渲染（AndroidPdfRenderer）
+2. 辅助阅读功能：截取当前页OCR、发送DeepSeek请求、展示AI输出
+3. 讲解风格管理：增删改查预设风格，记忆用户偏好
+
+## 主要模块
+- PDF渲染与管理：[app/src/main/java/com/example/deepreadx/pdf](mdc:app/src/main/java/com/example/deepreadx/pdf)
+- OCR文本识别：[app/src/main/java/com/example/deepreadx/ocr](mdc:app/src/main/java/com/example/deepreadx/ocr)
+- DeepSeek API集成：[app/src/main/java/com/example/deepreadx/api](mdc:app/src/main/java/com/example/deepreadx/api)
+- 数据持久化：[app/src/main/java/com/example/deepreadx/data](mdc:app/src/main/java/com/example/deepreadx/data)
+- UI组件：[app/src/main/java/com/example/deepreadx/ui](mdc:app/src/main/java/com/example/deepreadx/ui)
+- 工具类：[app/src/main/java/com/example/deepreadx/utils](mdc:app/src/main/java/com/example/deepreadx/utils)
+

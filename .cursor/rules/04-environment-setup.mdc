@@ -1,0 +1,48 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# DeepReadX环境配置
+
+## 开发环境要求
+
+- Android Studio最低版本：Electric Eel (2022.1.1)
+- Java JDK版本：11
+- Gradle版本：8.0+
+- Android SDK要求：
+  - 最低SDK版本：API 21 (Android 5.0 Lollipop)
+  - 目标SDK版本：API 33 (Android 13)
+  - 编译SDK版本：API 33
+
+## 依赖项配置
+
+```kotlin
+dependencies {
+    // AndroidX核心库
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    
+    // PDF渲染相关
+    implementation("androidx.documentfile:documentfile:1.0.1")
+    
+    // ML Kit (OCR文本识别)
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+    
+    // HTTP客户端 (DeepSeek API)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    
+    // 数据库
+    implementation("androidx.room:room-runtime:2.5.2")
+}
+```
+
+## 权限配置
+
+```xml
+<!-- 存储权限 - 读取PDF文件 -->
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+<!-- 网络权限 - 调用DeepSeek API -->
+<uses-permission android:name="android.permission.INTERNET" />
+```

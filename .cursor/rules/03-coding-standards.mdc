@@ -1,0 +1,130 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# DeepReadX编码规范
+
+## 命名约定
+
+### Java类
+
+- 使用Pascal命名法（每个单词首字母大写）
+- 类名应当是名词或名词短语
+- 接口名以"I"开头
+- 抽象类以"Abstract"或"Base"开头
+
+```java
+// 类名示例
+public class PdfRenderer { }
+public class DeepSeekApiClient { }
+
+// 接口示例
+public interface ITextRecognizer { }
+
+// 抽象类示例
+public abstract class AbstractDataRepository { }
+```
+
+### 方法
+
+- 使用驼峰命名法（第一个单词小写，其余单词首字母大写）
+- 方法名应当是动词或动词短语
+
+```java
+public void renderPdfPage(int pageIndex) { }
+public String recognizeText(Bitmap image) { }
+```
+
+### 变量
+
+- 使用驼峰命名法
+- 常量使用全大写，单词间用下划线分隔
+
+```java
+private int pageCount;
+private PdfRenderer pdfRenderer;
+public static final int MAX_PAGE_SIZE = 100;
+```
+
+### 资源文件
+
+- 全小写，单词间用下划线分隔
+- 布局文件以类型前缀命名
+
+```
+activity_main.xml
+fragment_explanation.xml
+item_pdf_thumbnail.xml
+dialog_style_selection.xml
+```
+
+## 代码风格
+
+### 缩进与格式
+
+- 使用4个空格缩进，不使用Tab
+- 大括号在同一行，不换行
+- 每行代码不超过100个字符
+
+```java
+public void exampleMethod() {
+    if (condition) {
+        doSomething();
+    } else {
+        doSomethingElse();
+    }
+}
+```
+
+### 注释规范
+
+- 类注释包含作者、创建日期、描述
+- 复杂方法需添加方法描述和参数说明
+- 使用Javadoc格式
+
+```java
+/**
+ * PDF渲染管理类，负责PDF文件的加载、显示和分页浏览
+ * 
+ * @author DeepReadX团队
+ * @created 2023-01-01
+ */
+public class PdfRenderer {
+    /**
+     * 渲染指定页码到Bitmap对象
+     *
+     * @param pageIndex 页码索引，从0开始
+     * @param width 目标宽度（像素）
+     * @param height 目标高度（像素）
+     * @return 渲染后的页面Bitmap
+     * @throws IllegalArgumentException 当页码超出范围时
+     */
+    public Bitmap renderPage(int pageIndex, int width, int height) {
+        // 实现代码
+    }
+}
+```
+
+### 包结构规范
+
+- 包名全小写
+- 代码按功能模块分包组织
+- 保持浅层包结构，避免过深嵌套
+
+```
+com.example.deepreadx.activity
+com.example.deepreadx.api
+com.example.deepreadx.data
+com.example.deepreadx.pdf
+com.example.deepreadx.ocr
+```
+
+## 最佳实践
+
+1. 单一职责原则：每个类只负责一项功能
+2. 依赖注入：使用构造函数注入或setter方法注入依赖
+3. 异步操作：耗时操作在后台线程执行，避免阻塞UI线程
+4. 错误处理：使用try-catch处理可恢复异常，传递不可恢复异常
+5. 资源管理：确保关闭IO流、数据库连接等资源
+6. 避免硬编码：字符串和常量使用资源文件定义

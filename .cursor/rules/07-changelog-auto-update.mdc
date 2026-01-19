@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 变更记录自动更新规则
+
+## 触发条件
+
+每当代码或文档有提交/合并时，自动在根目录下的 [CHANGELOG.md](mdc:CHANGELOG.md) 中追加一条变更记录。
+
+## 行为规范
+
+自动追加的变更记录应包含：
+- 变更摘要
+- 提交人信息
+- 日期时间戳
+- 相关模块标签
+
+## 记录格式
+
+变更记录应遵循以下格式规范：
+
+```markdown
+## [日期] 版本号(如适用)
+
+### 新增 (Added)
+- 功能A - [模块] 简要描述 (@提交人)
+- 功能B - [模块] 简要描述 (@提交人)
+
+### 修改 (Changed)
+- 功能C - [模块] 修改内容简述 (@提交人)
+
+### 修复 (Fixed)
+- Bug #123 - [模块] 修复描述 (@提交人)
+
+### 移除 (Removed)
+- 功能D - [模块] 移除原因 (@提交人)
+```
+
+## 注意事项
+
+1. 新条目应添加在文件顶部
+2. 保留历史记录，不删除旧条目
+3. 使用符合语义化版本规范的版本号
+4. 每个变更项应标注相关模块
+5. 较大功能变更应提供更详细描述链接
+
+## 实现方式
+
+此自动记录功能通过Git Hooks实现：
+
+```bash
+#!/bin/bash
+# .git/hooks/post-commit
+
+# 获取提交信息
+COMMIT_MSG=$(git log -1 --pretty=%B)
+AUTHOR=$(git log -1 --pretty=%an)
+DATE=$(date +"%Y-%m-%d")
+
+# 检测变更类型
+if [[ $COMMIT_MSG == *"feat:"* ]]; then
+  TYPE="新增 (Added)"
+elif [[ $COMMIT_MSG == *"fix:"* ]]; then
+  TYPE="修复 (Fixed)"
+elif [[ $COMMIT_MSG == *"chore:"* ]]; then
+  TYPE="修改 (Changed)"
+elif [[ $COMMIT_MSG == *"remove:"* ]]; then
+  TYPE="移除 (Removed)"
+else
+  TYPE="其他 (Other)"
+fi
+
+# 提取模块名
+MODULE=$(echo $COMMIT_MSG | grep -oP '\[\K[^\]]+')
+if [ -z "$MODULE" ]; then
+  MODULE="未指定"
+fi
+
+# 生成变更条目
+ENTRY="- ${COMMIT_MSG} - [${MODULE}] (@${AUTHOR})"
+
+# 更新CHANGELOG.md
+sed -i "s/^## \[$DATE\]/&\n\n### $TYPE\n$ENTRY/" CHANGELOG.md || \
+echo -e "## [$DATE]\n\n### $TYPE\n$ENTRY\n\n$(cat CHANGELOG.md)" > CHANGELOG.md

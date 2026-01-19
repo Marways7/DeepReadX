@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DeepReadX</string>
+    
+    <!-- PDF查看器相关 -->
+    <string name="pdf_viewer_title">PDF查看器</string>
+    <string name="pdf_page_content_description">PDF页面内容</string>
+    <string name="previous_page">上一页</string>
+    <string name="next_page">下一页</string>
+    <string name="explain_text">解释文本</string>
+    <string name="page_indicator">第 %1$d / %2$d 页</string>
+    
+    <!-- 错误信息 -->
+    <string name="error_invalid_pdf">无效的PDF文件</string>
+    <string name="error_open_pdf">无法打开PDF文件: %1$s</string>
+    <string name="error_render_page">渲染页面失败</string>
+    
+    <!-- AI解释相关 -->
+    <string name="explanation_loading">正在生成解释…</string>
+    <string name="explanation_title">AI解释</string>
+    <string name="select_text_prompt">选择需要解释的文本</string>
+</resources>

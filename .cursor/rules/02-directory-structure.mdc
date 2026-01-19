@@ -1,0 +1,81 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# DeepReadX目录结构
+
+## 主要模块目录
+
+```
+app/src/main/java/com/example/deepreadx/
+├── activity/          # Activity类
+│   ├── MainActivity.java                # 应用主入口
+│   ├── PdfViewerActivity.java           # PDF查看器
+│   └── SettingsActivity.java            # 设置界面
+├── adapter/           # RecyclerView适配器
+│   ├── PdfThumbnailAdapter.java         # PDF缩略图列表
+│   └── StylePresetAdapter.java          # 风格预设列表
+├── api/               # API集成
+│   ├── DeepSeekApiClient.java           # API客户端
+│   ├── DeepSeekService.java             # 服务接口
+│   └── model/                           # 数据模型
+│       ├── ApiRequest.java              # 请求模型
+│       └── ApiResponse.java             # 响应模型
+├── data/              # 数据管理
+│   ├── database/                        # 数据库
+│   │   ├── AppDatabase.java             # 数据库实例
+│   │   └── dao/                         # 数据访问对象
+│   │       ├── PdfDocumentDao.java      # PDF文档DAO
+│   │       └── StylePresetDao.java      # 风格预设DAO
+│   ├── model/                           # 数据模型
+│   │   ├── PdfDocument.java             # PDF文档
+│   │   └── StylePreset.java             # 风格预设
+│   └── repository/                      # 仓库
+│       ├── PdfRepository.java           # PDF仓库
+│       └── StyleRepository.java         # 风格仓库
+├── ocr/               # OCR相关
+│   ├── TextRecognizer.java              # 文本识别器
+│   └── TextProcessor.java               # 文本处理
+├── pdf/               # PDF处理
+│   ├── PdfRenderer.java                 # PDF渲染器
+│   └── PdfManager.java                  # PDF管理器
+├── ui/                # UI组件
+│   ├── component/                       # 自定义组件
+│   │   ├── ExplanationPanel.java        # 解释面板
+│   │   └── PdfPageView.java             # PDF页面视图
+│   ├── dialog/                          # 对话框
+│   │   ├── StyleSelectionDialog.java    # 风格选择
+│   │   └── TextSelectionDialog.java     # 文本选择
+│   └── theme/                           # 主题定义
+├── utils/             # 工具类
+│   ├── FileUtils.java                   # 文件工具
+│   ├── ImageUtils.java                  # 图像工具
+│   └── TextUtils.java                   # 文本工具
+└── DeepReadXApplication.java            # 应用类
+```
+
+## 资源目录结构
+
+```
+app/src/main/res/
+├── drawable/          # 图像资源
+├── layout/            # 布局文件
+│   ├── activity_main.xml                # 主页面布局
+│   ├── activity_pdf_viewer.xml          # PDF查看页面
+│   ├── activity_settings.xml            # 设置页面
+│   ├── dialog_style_selection.xml       # 风格选择对话框
+│   ├── item_pdf_thumbnail.xml           # PDF缩略图条目
+│   └── item_style_preset.xml            # 风格预设条目
+├── menu/              # 菜单
+│   ├── menu_main.xml                    # 主菜单
+│   └── menu_pdf_viewer.xml              # PDF查看菜单
+├── values/            # 各种值资源
+│   ├── colors.xml                       # 颜色定义
+│   ├── dimens.xml                       # 尺寸定义
+│   ├── strings.xml                      # 字符串资源
+│   └── styles.xml                       # 样式定义
+└── xml/               # XML配置
+    ├── file_paths.xml                   # 文件路径
+    └── preferences.xml                  # 偏好设置
+```

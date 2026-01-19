@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 网络权限 - 用于调用DeepSeek API -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <!-- 存储权限 - 用于读取PDF文件 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" 
+        android:minSdkVersion="33" />
+    <uses-permission android:name="android.permission.READ_MEDIA_DOCUMENTS" 
+        android:minSdkVersion="33" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DeepReadX"
+        tools:targetApi="31">
+        
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.DeepReadX">
+            <!-- 移除主启动配置 -->
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
+        
+        <activity
+            android:name="com.deepreadx.viewer.PdfViewerActivity"
+            android:exported="true"
+            android:label="@string/pdf_viewer_title"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Theme.DeepReadX">
+            <!-- 设置为主启动活动 -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+            
+        <activity
+            android:name="com.deepreadx.ui.StyleManagerActivity"
+            android:exported="false"
+            android:label="讲解风格管理"
+            android:theme="@style/Theme.DeepReadX" />
+            
+        <activity
+            android:name="com.deepreadx.ui.HistoryActivity"
+            android:exported="false"
+            android:label="解释历史记录"
+            android:theme="@style/Theme.DeepReadX" />
+            
+        <!-- ML Kit 离线模型下载服务设置 -->
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="ocr,ocr_chinese" />
+            
+    </application>
+
+</manifest>
