@@ -123,3 +123,7 @@ set +a
 ## 📄 许可证
 
 本项目采用 **MIT License** 开源，详情见 [LICENSE](./LICENSE)。
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Marways7/DeepReadX&type=date&legend=top-left)](https://www.star-history.com/#Marways7/DeepReadX&type=date&legend=top-left)
